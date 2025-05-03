@@ -8,9 +8,10 @@ const Profile = () => {
     const [email, setEmail] = useState('john@example.com')
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        alert(`Data disimpan:\nNama: ${name}\nEmail: ${email}`)
-      }
+      e.preventDefault()
+      console.log({ name, email })
+      // Nanti bisa disambungkan ke backend atau API
+    }
   return (
     <div>
       <div>
