@@ -1,8 +1,9 @@
+// app/profile/page.tsx
 'use client'
 
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 
 const Profile = () => {
   const { data: session, update } = useSession()
@@ -34,10 +35,14 @@ const Profile = () => {
     }
   }
 
-  if (!session) return <p>Kamu belum login...</p>
+  if (!session) {
+      // Jika tidak ada session, arahkan ke halaman login
+      redirect("/api/auth/signin");
+    }
 
   return (
-    <div className="p-6">
+    <div className='min-h-screen'>
+      <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Edit Profil</h1>
       <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
         <div>
@@ -63,7 +68,8 @@ const Profile = () => {
         </button>
       </form>
     </div>
-  )
+    </div>
+  );
 }
 
-export default Profile
+export default Profile;
