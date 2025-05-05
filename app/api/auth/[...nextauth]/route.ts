@@ -2,6 +2,7 @@
 import NextAuth, { User } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 
+import type { Session } from "next-auth";
 import { MongoClient } from 'mongodb';
 import clientPromise from "@/lib/mongodb"; 
 
@@ -42,6 +43,23 @@ export const authOptions = {
       } catch (error) {
         console.error("❌ Error in signIn callback:", error);
         return true; // ✅ Sementara izinkan login walau error, untuk debugging
+      }
+    },
+    async session({ session } : {session : Session}) {
+      try {
+        const client = await clientPromise;
+        const db = client.db("30days-db");
+        const user = await db.collection("users").findOne({ email: session.user.email });
+
+        if (user) {
+          session.user.name = user.name;
+          session.user.image = user.image;
+        }
+
+        return session;
+      } catch (error) {
+        console.error("❌ Error in session callback:", error);
+        return session;
       }
     },
     async redirect({ url, baseUrl }: { url: string, baseUrl: string }) {
