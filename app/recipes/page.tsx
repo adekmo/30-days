@@ -61,6 +61,11 @@ const RecipesPage = () => {
               <h2 className="text-xl font-semibold">{recipe.title}</h2>
               <p><strong>Bahan:</strong> {recipe.ingredients}</p>
               <p><strong>Cara membuat:</strong> {recipe.instructions}</p>
+              <button>
+                <Link href={`/recipes/${recipe._id}/edit`} className="text-blue-600 hover:underline mr-2">
+                Edit
+              </Link>
+              </button>
               <button
                 onClick={() => handleDelete(recipe._id)}
                 className="mt-2 text-sm text-red-600 hover:underline"
