@@ -6,13 +6,14 @@ import Link from 'next/link';
 const RecipesPage = () => {
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState('');
+    const [search, setSearch] = useState("");
+    const [ingredient, setIngredient] = useState("");
 
     useEffect(() => {
         const fetchRecipes = async () => {
           try {
             // const res = await fetch('/api/recipes');
-            const query = search ? `?search=${encodeURIComponent(search)}` : "";
+            const query = search ? `?search=${encodeURIComponent(search)}` : `?ingredient=${encodeURIComponent(ingredient)}`;
             const res = await fetch(`/api/recipes${query}`);
             if (!res.ok) throw new Error('Gagal fetch');
     
@@ -26,7 +27,7 @@ const RecipesPage = () => {
         };
     
         fetchRecipes();
-      }, [search]);
+      }, [search, ingredient]);
 
       const handleDelete = async (id: string) => {
         if (!confirm('Yakin ingin menghapus resep ini?')) return;
@@ -55,13 +56,22 @@ const RecipesPage = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Resep Saya</h1>
-      <input
-        type="text"
-        placeholder="Cari resep..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="border rounded px-3 py-2 mb-4 w-full max-w-md"
-      />
+      <div className='p-2 flex justify-between'>
+        <input
+          type="text"
+          placeholder="Cari resep..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border rounded px-3 py-2 mb-4 w-full max-w-md"
+        />
+        <input
+          type="text"
+          placeholder="Filter berdasarkan bahan..."
+          value={ingredient}
+          onChange={(e) => setIngredient(e.target.value)}
+          className="border rounded px-3 py-2 mb-4 w-full max-w-md"
+        />
+      </div>
       {loading ? (
         <p>Loading...</p>
       ) : recipes.length === 0 ? (

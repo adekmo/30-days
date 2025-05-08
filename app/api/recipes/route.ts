@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search");
+    const ingredient = searchParams.get("ingredient");
   
     try {
       const client = await clientPromise;
@@ -22,6 +23,9 @@ export async function GET(req: NextRequest) {
 
       if (search) {
         query.title = { $regex: new RegExp(search, "i") }; // i = case-insensitive
+      }
+      if (ingredient) {
+        query.ingredients = { $regex: ingredient, $options: "i" };
       }
   
       const recipes = await db
