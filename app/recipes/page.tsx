@@ -6,11 +6,14 @@ import Link from 'next/link';
 const RecipesPage = () => {
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         const fetchRecipes = async () => {
           try {
-            const res = await fetch('/api/recipes');
+            // const res = await fetch('/api/recipes');
+            const query = search ? `?search=${encodeURIComponent(search)}` : "";
+            const res = await fetch(`/api/recipes${query}`);
             if (!res.ok) throw new Error('Gagal fetch');
     
             const data = await res.json();
@@ -23,7 +26,7 @@ const RecipesPage = () => {
         };
     
         fetchRecipes();
-      }, []);
+      }, [search]);
 
       const handleDelete = async (id: string) => {
         if (!confirm('Yakin ingin menghapus resep ini?')) return;
@@ -52,8 +55,17 @@ const RecipesPage = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Resep Saya</h1>
-      {recipes.length === 0 ? (
-        <p>Belum ada resep ditambahkan.</p>
+      <input
+        type="text"
+        placeholder="Cari resep..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="border rounded px-3 py-2 mb-4 w-full max-w-md"
+      />
+      {loading ? (
+        <p>Loading...</p>
+      ) : recipes.length === 0 ? (
+        <p>Tidak ada resep ditemukan.</p>
       ) : (
         <ul className="space-y-4">
           {recipes.map((recipe: any) => (
@@ -61,15 +73,13 @@ const RecipesPage = () => {
               <h2 className="text-xl font-semibold">{recipe.title}</h2>
               <p><strong>Bahan:</strong> {recipe.ingredients}</p>
               <p><strong>Cara membuat:</strong> {recipe.instructions}</p>
-              <button>
-                <Link href={`/recipes/${recipe._id}/edit`} className="text-blue-600 hover:underline mr-2">
+              <Link href={`/recipes/${recipe._id}/edit`} className="text-blue-600 hover:underline mr-2">
                 Edit
               </Link>
-              </button>
               <button
                 onClick={() => handleDelete(recipe._id)}
-                className="mt-2 text-sm text-red-600 hover:underline"
-                >
+                className="text-red-600 hover:underline"
+              >
                 Hapus
               </button>
             </li>

@@ -10,14 +10,24 @@ export async function GET(req: NextRequest) {
     if (!session || !session.user?.email) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
+
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get("search");
   
     try {
       const client = await clientPromise;
       const db = client.db('30days-db');
+
+      const query: any = { userEmail: session.user.email };
+
+      if (search) {
+        query.title = { $regex: new RegExp(search, "i") }; // i = case-insensitive
+      }
   
       const recipes = await db
         .collection('recipes')
-        .find({ userEmail: session.user.email })
+        // .find({ userEmail: session.user.email })
+        .find(query)
         .sort({ createdAt: -1 })
         .toArray();
   
