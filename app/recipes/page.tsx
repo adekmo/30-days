@@ -50,6 +50,29 @@ const RecipesPage = () => {
           alert('Gagal menghapus resep.');
         }
       };
+
+      const handleToggleFavorite = async (id: string, currentStatus: boolean) => {
+        try {
+          const res = await fetch(`/api/recipes/${id}/favorites`, {
+            method: 'PATCH',
+            body: JSON.stringify({ isFavorite: !currentStatus }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+      
+          if (!res.ok) throw new Error('Gagal update favorit');
+      
+          setRecipes((prev : any) =>
+            prev.map((recipe: any) =>
+              recipe._id === id ? { ...recipe, isFavorite: !currentStatus } : recipe
+            )
+          );
+        } catch (err) {
+          console.error('❌ Gagal update favorit:', err);
+          alert('Gagal memperbarui status favorit.');
+        }
+      };
     
       if (loading) return <p className="p-6">Loading...</p>;
 
@@ -91,6 +114,12 @@ const RecipesPage = () => {
                 className="text-red-600 hover:underline"
               >
                 Hapus
+              </button>
+              <button
+                onClick={() => handleToggleFavorite(recipe._id, recipe.isFavorite)}
+                className={`text-sm ${recipe.isFavorite ? 'text-yellow-500' : 'text-gray-400'} hover:underline mr-4`}
+              >
+                {recipe.isFavorite ? '★ Favorit' : '☆ Tambahkan ke Favorit'}
               </button>
             </li>
           ))}
