@@ -106,7 +106,10 @@ const RecipesPage = () => {
               <h2 className="text-xl font-semibold">{recipe.title}</h2>
               <p><strong>Bahan:</strong> {recipe.ingredients}</p>
               <p><strong>Cara membuat:</strong> {recipe.instructions}</p>
-              <Link href={`/recipes/${recipe._id}/edit`} className="text-blue-600 hover:underline mr-2">
+              {recipe.image && (
+                <img src={recipe.image} alt={recipe.title} className="w-full max-w-sm rounded mb-2" />
+              )}
+                      <Link href={`/recipes/${recipe._id}/edit`} className="text-blue-600 hover:underline mr-2">
                 Edit
               </Link>
               <button

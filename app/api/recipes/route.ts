@@ -55,9 +55,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { title, ingredients, instructions } = body;
+    const { title, ingredients, instructions, image  } = body;
 
-    if (!title || !ingredients || !instructions) {
+    if (!title || !ingredients || !instructions || !image) {
       return NextResponse.json({ message: 'Missing fields' }, { status: 400 });
     }
 
@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
       title,
       ingredients,
       instructions,
+      image : image || null,
       isFavorite: false,
       createdAt: new Date(),
     };
