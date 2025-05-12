@@ -44,12 +44,27 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           image: user.image || null,
+          role: user.role || "user",
         };
       },
     }),
   ],
 
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        const client = await clientPromise;
+        const db = client.db("30days-db");
+        const foundUser = await db.collection("users").findOne({ email: user.email });
+
+        if (foundUser) {
+          token.role = foundUser.role || "user";
+          token.email = foundUser.email;
+          token.email = foundUser._id.toString();
+        }
+      }
+      return token;
+    },
     // Untuk GitHub login (karena tidak pakai authorize)
     async signIn({ user }) {
       try {
@@ -66,6 +81,7 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             image: user.image,
             createdAt: new Date(),
+            role: "user",
           });
         }
 
@@ -76,7 +92,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
 
-    async session({ session }) {
+    async session({ session, token }) {
       try {
         const client = await clientPromise;
         const db = client.db("30days-db");
@@ -86,6 +102,9 @@ export const authOptions: NextAuthOptions = {
           session.user.name = user.name;
           session.user.image = user.image;
           session.user.id = user._id.toString();
+        }
+        if (token && session.user) {
+          session.user.role = token.role; 
         }
 
         return session;
