@@ -8,6 +8,7 @@ type Recipe = {
   _id: string;
   title: string;
   ingredients: string;
+  userEmail: string;
   instructions: string;
   image?: string;
   userId?: string;
@@ -55,6 +56,7 @@ const AdminRecipePage = () => {
             {recipe.image && (
               <Image src={recipe.image} alt={recipe.title} width={400} height={200} className="rounded" />
             )}
+            <p className="text-sm text-gray-300">By : {recipe.userEmail}</p>
             <h2 className="text-xl font-semibold">{recipe.title}</h2>
             <p className="text-sm text-gray-600">{recipe.ingredients}</p>
             <p className="text-sm text-gray-600">{recipe.instructions}</p>
