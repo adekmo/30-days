@@ -23,6 +23,11 @@ const AdminPage = () => {
               All Users
           </Link>
         </button>
+        <button className="bg-blue-500 p-2 m-2 rounded-md">
+          <Link href={`/admin/stats`} className="text-slate-200 hover:underline mr-2">
+              Stats
+          </Link>
+        </button>
       </div>
       {/* nanti kita tambahkan list resep semua user */}
     </div>
